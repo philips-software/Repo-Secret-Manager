@@ -1,4 +1,5 @@
 import sys
+import requests
 from github import Github, BadCredentialsException
 from github.GithubException import UnknownObjectException
 
@@ -7,6 +8,7 @@ source = None
 
 createCommand = "create"
 deleteCommand = "delete"
+updateCommand = "update"
 tokenCommand = "--token"
 namesCommand = "--names"
 valuesCommand = "--values"
@@ -78,15 +80,17 @@ def apply_action(repo_name):
     return "y" in input(f"Apply action to {repo_name}? (y/n) ").lower()
 
 
-def validate_action(candidate_action, create_command, delete_command, secret_names, secret_values):
+def validate_action(candidate_action, create_command, update_command, delete_command, secret_names, secret_values):
     if delete_command.lower() in candidate_action.lower():
         return delete_command
+    if update_command.lower() in candidate_action.lower():
+        return update_command
     if create_command.lower() in candidate_action.lower():
         if len(secret_names) != len(secret_values):
             raise ValueError(invalidNamesAndSecretsMessage)
         return create_command
-    raise ValueError(f"{candidate_action} is not a valid action! Please enter \"{create_command}\" or" \
-                     f"\"{delete_command}\" as the first argument")
+    raise ValueError(f"{candidate_action} is not a valid action! Please enter \"{create_command}\",\"{update_command}\""
+                     + f"\"or {delete_command}\" as the first argument")
 
 
 def get_input_from_user():
@@ -114,6 +118,20 @@ def get_input_from_cli():
     return UserInput(token, action, secret_names, secret_values, target_team_name, interactive)
 
 
+def create_secret(token, repository, secret_name, secret_value):
+    repo_full_name = repository.full_name
+    repo_name = repository.name
+    query_url = f"https://api.github.com/repos/{repo_full_name}/actions/secrets"
+    headers = {'Authorization': f'token {token}'}
+    r = requests.get(query_url, headers=headers)
+    remote_secret_names = list(r.json().secrets)
+    if secret_name not in remote_secret_names:
+        print(f"Secret \"{secret_name}\" added to {repo_name}")
+        repository.create_secret(secret_name, secret_value)
+    else:
+        print(f"Secret \"{secret_name}\" already exists in {repo_name}")
+
+
 if __name__ == "__main__":
     if len(args) == 0:
         inp = get_input_from_user()
@@ -136,8 +154,10 @@ if __name__ == "__main__":
             if not inp.interactive or apply_action(repo.name):
                 try:
                     if inp.action == createCommand:
+                        create_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
+                    if inp.action == updateCommand:
                         repo.create_secret(inp.secret_names[i], inp.secret_values[i])
-                        print(f"Secret \"{inp.secret_names[i]}\" added to {repo.name}")
+                        print(f"Secret \"{inp.secret_names[i]}\" updated for {repo.name}")
                     if inp.action == deleteCommand:
                         repo.delete_secret(inp.secret_names[i])
                         print(f"Secret \"{inp.secret_names[i]}\" removed from {repo.name}")
