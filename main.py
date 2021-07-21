@@ -1,4 +1,5 @@
 import sys
+
 import requests
 from github import Github, BadCredentialsException
 from github.GithubException import UnknownObjectException
@@ -96,10 +97,10 @@ def validate_action(candidate_action, create_command, update_command, delete_com
 def get_input_from_user():
     token = input("Github PAT: ")
     action = input("Desired action to be performed (create/delete): ")
-    secret_names = input("Comma separated list of secret names: ")
+    secret_names = input("Comma separated list of secret names: ").split(',')
     if action.lower() != deleteCommand:
-        secret_values = input("Comma separated list of secret values: ")
-        validate_action(action, createCommand, deleteCommand, secret_names, secret_values)
+        secret_values = input("Comma separated list of secret values: ").split(',')
+        validate_action(action, createCommand, updateCommand, deleteCommand, secret_names, secret_values)
     if "y" in input("Limit tool to a github team? (y/n)").lower():
         target_team_name = input("Team name: ")
     else:
@@ -114,20 +115,27 @@ def get_input_from_cli():
     secret_values = get_optional_value_from_input(args, valuesCommand).split(',')
     target_team_name = get_optional_value_from_input(args, teamCommand)
     interactive = interactiveCommand in args
-    action = validate_action(args[0], createCommand, deleteCommand, secret_names, secret_values)
+    action = validate_action(args[0], createCommand, updateCommand, deleteCommand, secret_names, secret_values)
     return UserInput(token, action, secret_names, secret_values, target_team_name, interactive)
 
 
-def create_secret(token, repository, secret_name, secret_value):
-    repo_full_name = repository.full_name
-    repo_name = repository.name
+def flatten_secrets_dict(dict_of_secrets):
+    list_of_secrets = []
+    for secret in dict_of_secrets:
+        list_of_secrets.append(secret["name"])
+    return list_of_secrets
+
+
+def add_secret(token, target_repository, secret_name, secret_value):
+    repo_full_name = target_repository.full_name
+    repo_name = target_repository.name
     query_url = f"https://api.github.com/repos/{repo_full_name}/actions/secrets"
     headers = {'Authorization': f'token {token}'}
     r = requests.get(query_url, headers=headers)
-    remote_secret_names = list(r.json().secrets)
-    if secret_name not in remote_secret_names:
+    response = r.json()
+    if secret_name not in flatten_secrets_dict(response["secrets"]):
         print(f"Secret \"{secret_name}\" added to {repo_name}")
-        repository.create_secret(secret_name, secret_value)
+        target_repository.create_secret(secret_name, secret_value)
     else:
         print(f"Secret \"{secret_name}\" already exists in {repo_name}")
 
@@ -154,8 +162,9 @@ if __name__ == "__main__":
             if not inp.interactive or apply_action(repo.name):
                 try:
                     if inp.action == createCommand:
-                        create_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
+                        add_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
                     if inp.action == updateCommand:
+                        c = repo.get_contributors()
                         repo.create_secret(inp.secret_names[i], inp.secret_values[i])
                         print(f"Secret \"{inp.secret_names[i]}\" updated for {repo.name}")
                     if inp.action == deleteCommand:
