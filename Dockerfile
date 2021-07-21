@@ -1,4 +1,4 @@
-FROM python:python:3.9.6
+FROM python:3.9.6
 
 ADD entrypoint.sh /entrypoint.sh
 ADD main.py /main.py
