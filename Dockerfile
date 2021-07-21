@@ -4,7 +4,6 @@ WORKDIR /app
 ADD ./entrypoint.sh /app/
 ADD main.py /app/
 
-RUN pip install pygithub requests
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]
