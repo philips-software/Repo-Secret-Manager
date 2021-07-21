@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ ${#TEAM} -gt 0 ]
 then
