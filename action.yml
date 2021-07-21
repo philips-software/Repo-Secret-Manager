@@ -21,7 +21,7 @@ inputs:
     default: ''
 runs:
   using: 'docker'
-  image: 'DOCKERFILE'
+  image: 'Dockerfile'
   entrypoint: 'entrypoint.sh'
   env:
     ACTION: ${{ inputs.action }}
