@@ -6,7 +6,7 @@ inputs:
     description: 'The action to be performed. `create`, `update`, or `delete`'
     mandatory: True
   team:
-    description: 'Apply the specified action to all repos belonging to this github team. If no team is specified, the secret will be added to all of the user's repositories'
+    description: 'Apply the specified action to all repos belonging to this github team. If no team is specified, the secret will be added to all of the repositories the token can manage'
     mandatory: False
     default: ''
   token: 
