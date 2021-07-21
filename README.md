@@ -22,7 +22,7 @@ Currently, GitHub does not support storing secrets at the team level, only at th
     action: create
     token: ${{ secrets.MY_GITHUB_PAT }}
     secret-name: BLACKDUCK_TOKEN
-    secret-values abc123
+    secret-values: abc123
     
 - name: Add Secrets to HELLO team Repos
   uses: philips-software/Repo-Secret-Manager@master
@@ -30,7 +30,7 @@ Currently, GitHub does not support storing secrets at the team level, only at th
     action: create
     token: ${{ secrets.MY_GITHUB_PAT }}
     secret-name: BLACKDUCK_TOKEN,FORTIFY_TOKEN
-    secret-values abc123,123abc
+    secret-values: abc123,123abc
     team: hello
     
 ```
@@ -42,7 +42,7 @@ Currently, GitHub does not support storing secrets at the team level, only at th
     action: update
     token: ${{ secrets.MY_GITHUB_PAT }}
     secret-name: BLACKDUCK_TOKEN
-    secret-values xyz123
+    secret-values: xyz123
 ```
 
 ### Delete Secret(s)
