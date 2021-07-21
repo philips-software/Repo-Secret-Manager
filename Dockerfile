@@ -1,13 +1,10 @@
 FROM python:3.9.6
 
-WORKDIR /usr/src/app
-
-ADD entrypoint.sh ./entrypoint.sh
-ADD main.py ./main.py
+WORKDIR /app
+ADD ./entrypoint.sh /app/
+ADD main.py /app/
 
 RUN pip install pygithub requests
-RUN chmod +x ./entrypoint.sh 
-RUN pwd 
-RUN ls
+RUN chmod +x /app/entrypoint.sh
 
-ENTRYPOINT ./entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
