@@ -31,4 +31,4 @@ runs:
     VALUES: ${{ inputs.secret-values }}
 branding:
   icon: 'lock'  
-  color: 'blue
+  color: 'blue'
