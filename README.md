@@ -18,7 +18,7 @@ Currently, GitHub does not support storing secrets at the team level, only at th
 ### Add Secret(s)
 ```yaml
 - name: Add Secret
-  uses: philips-software/Repo-Secret-Manager@master
+  uses: philips-software/Repo-Secret-Manager@main
   with:
     action: create
     token: ${{ secrets.MY_GITHUB_PAT }}
@@ -26,7 +26,7 @@ Currently, GitHub does not support storing secrets at the team level, only at th
     secret-values: abc123
     
 - name: Add Secrets to HELLO team Repos
-  uses: philips-software/Repo-Secret-Manager@master
+  uses: philips-software/Repo-Secret-Manager@main
   with:
     action: create
     token: ${{ secrets.MY_GITHUB_PAT }}
@@ -38,7 +38,7 @@ Currently, GitHub does not support storing secrets at the team level, only at th
 ### Update Existing Secret(s) with New Value
 ```yaml
 - name: Update Secret
-  uses: philips-software/Repo-Secret-Manager@master
+  uses: philips-software/Repo-Secret-Manager@main
   with:
     action: update
     token: ${{ secrets.MY_GITHUB_PAT }}
@@ -49,7 +49,7 @@ Currently, GitHub does not support storing secrets at the team level, only at th
 ### Delete Secret(s)
 ```yaml
 - name: Delete Secret
-  uses: philips-software/Repo-Secret-Manager@master
+  uses: philips-software/Repo-Secret-Manager@main
   with:
     action: delete
     token: ${{ secrets.MY_GITHUB_PAT }}
