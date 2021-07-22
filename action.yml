@@ -1,0 +1,33 @@
+name: 'Repo Secret Manager'
+author: 'Philips'
+description: ''
+inputs:
+  action:
+    description: 'The action to be performed. `create`, `update`, or `delete`'
+    mandatory: True
+  team:
+    description: 'Apply the specified action to all repos belonging to this github team. If no team is specified, the secret will be added to all of the repositories the token can manage'
+    mandatory: False
+    default: ''
+  token: 
+    description: 'A GitHub PAT with permission to manage secrets. Can NOT be the GITHUB_TOKEN secret.'
+    mandatory: True
+  secret-names:
+    description: 'A comma-separated list of secret name(s) to apply the action to'
+    mandatory: True
+  secret-values:
+    description: 'A comma-separated list of secret value(s). Only required if `create` or `update` is selected'
+    mandatory: False
+    default: ''
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    ACTION: ${{ inputs.action }}
+    TEAM: ${{ inputs.team }}
+    TOKEN: ${{ inputs.token }}
+    NAMES: ${{ inputs.secret-names }}
+    VALUES: ${{ inputs.secret-values }}
+branding:
+  icon: 'lock'  
+  color: 'blue'
