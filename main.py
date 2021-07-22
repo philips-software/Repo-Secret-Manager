@@ -135,7 +135,7 @@ def add_secret(token, target_repository, secret_name, secret_value):
     response = r.json()
     try:
       secret_names = flatten_secrets_dict(response["secrets"])
-    catch: 
+    except: 
       secret_names = []
     if secret_name not in secret_names:
         print(f"Secret \"{secret_name}\" added to {repo_name}")
