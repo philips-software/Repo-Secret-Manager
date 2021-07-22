@@ -1,6 +1,6 @@
 name: 'Repo Secret Manager'
 author: 'Philips'
-description: ''
+description: 'Add, update, and delete encrypted secrets from repositories in bulk'
 inputs:
   action:
     description: 'The action to be performed. `create`, `update`, or `delete`'
