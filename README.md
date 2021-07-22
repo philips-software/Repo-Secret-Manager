@@ -1,4 +1,4 @@
-[![CodeQL](https://github.com/philips-software/Repo-Secret-Manager/actions/workflows/codeql-analysis.yml/badge.svg?event=push)](https://github.com/philips-software/Repo-Secret-Manager/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/philips-software/Repo-Secret-Manager/actions/workflows/codeql-analysis.yml/badge.svg?event=push)](https://github.com/philips-software/Repo-Secret-Manager/actions/workflows/codeql-analysis.yml) [![Tests](https://github.com/philips-software/Repo-Secret-Manager/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/philips-software/Repo-Secret-Manager/actions/workflows/ci.yml)
 # Repo Secret Manager Action
 This action can be used to automate creating, updating, and deleting repository level [GitHub secrets](https://docs.github.com/en/actions/reference/encrypted-secrets) for repos belonging to a user or a team, leveraging GitHub's existing encrypted storage. 
 
