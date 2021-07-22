@@ -1,4 +1,5 @@
-# Github Secret Manager Action
+[![CodeQL](https://github.com/philips-software/Repo-Secret-Manager/actions/workflows/codeql-analysis.yml/badge.svg?event=push)](https://github.com/philips-software/Repo-Secret-Manager/actions/workflows/codeql-analysis.yml)
+# Repo Secret Manager Action
 This action can be used to automate creating, updating, and deleting repository level [GitHub secrets](https://docs.github.com/en/actions/reference/encrypted-secrets) for repos belonging to a user or a team, leveraging GitHub's existing encrypted storage. 
 
 Currently, GitHub does not support storing secrets at the team level, only at the repository or organization level. This is inconvenient in case a team manages many repositories, as the secrets would otherwise need to be manually added to each repo or exposed to the entire organization.
