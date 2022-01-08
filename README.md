@@ -13,6 +13,7 @@ Currently, GitHub does not support storing secrets at the team level, only at th
 |secret-names| A comma-separated list of secret name(s) to apply the action to | Yes |
 |secret-values| A comma-separated list of secret value(s)| If "create" or "update" is selected |
 |team|If a team name is given, the secret will be added to all repositories in that team. If no team is specified, the secret will be added to all of the user's repositories|No|
+|repo| A repo to sync the secrets to. If empty, secrets will be sync to all repos for the given user/team|No|
 
 ## Usage
 ### Add Secret(s)
