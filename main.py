@@ -14,6 +14,7 @@ tokenCommand = "--token"
 namesCommand = "--names"
 valuesCommand = "--values"
 teamCommand = "--team"
+repoCommand = "--repo"
 interactiveCommand = "--interactive"
 
 noTokenMessage = "Please provide a valid GitHub PAT using --token <PAT>."
@@ -27,12 +28,13 @@ invalidNamesAndSecretsMessage = "Secret names and secret values lists are not th
 
 
 class UserInput:
-    def __init__(self, token, action, secret_names, secret_values, target_team_name, interactive):
+    def __init__(self, token, action, secret_names, secret_values, target_team_name, target_repo_name, interactive):
         self.token = token
         self.action = action
         self.secret_names = secret_names
         self.secret_values = secret_values
         self.target_team_name = target_team_name
+        self.target_repo_name = target_repo_name
         self.interactive = interactive
 
 
@@ -105,8 +107,12 @@ def get_input_from_user():
         target_team_name = input("Team name: ")
     else:
         target_team_name = ""
+    if "y" in input("Limit tool to a specific repo? (y/n)").lower():
+        target_repo_name = input("Repo name: ")
+    else:
+        target_repo_name = ""
     interactive = "y" in input("Prompt for approval before applying action to each repo? (y/n)").lower()
-    return UserInput(token, action, secret_names, secret_values, target_team_name, interactive)
+    return UserInput(token, action, secret_names, secret_values, target_team_name, target_repo_name, interactive)
 
 
 def get_input_from_cli():
@@ -114,9 +120,10 @@ def get_input_from_cli():
     secret_names = get_mandatory_value_from_input(args, namesCommand, noNamesMessage).split(',')
     secret_values = get_optional_value_from_input(args, valuesCommand).split(',')
     target_team_name = get_optional_value_from_input(args, teamCommand)
+    target_repo_name = get_optional_value_from_input(args, repoCommand)
     interactive = interactiveCommand in args
     action = validate_action(args[0], createCommand, updateCommand, deleteCommand, secret_names, secret_values)
-    return UserInput(token, action, secret_names, secret_values, target_team_name, interactive)
+    return UserInput(token, action, secret_names, secret_values, target_team_name, target_repo_name, interactive)
 
 
 def flatten_secrets_dict(dict_of_secrets):
@@ -162,6 +169,9 @@ if __name__ == "__main__":
         source = g.get_user()
 
     for repo in source.get_repos():
+        if(inp.target_repo_name != "" and repo.name != inp.target_repo_name):
+            continue
+
         for i in range(len(inp.secret_names)):
             if not inp.interactive or apply_action(repo.name):
                 try:
