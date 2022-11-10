@@ -99,9 +99,9 @@ def validate_action(candidate_action, create_command, update_command, delete_com
 def get_input_from_user():
     token = input("Github PAT: ")
     action = input("Desired action to be performed (create/delete): ")
-    secret_names = input("Comma separated list of secret names: ").split(',')
+    secret_names = input("Comma separated list of secret names: ").split('[|]')
     if action.lower() != deleteCommand:
-        secret_values = input("Comma separated list of secret values: ").split(',')
+        secret_values = input("Comma separated list of secret values: ").split('[|]')
         validate_action(action, createCommand, updateCommand, deleteCommand, secret_names, secret_values)
     if "y" in input("Limit tool to a github team? (y/n)").lower():
         target_team_name = input("Team name: ")
@@ -117,8 +117,8 @@ def get_input_from_user():
 
 def get_input_from_cli():
     token = get_mandatory_value_from_input(args, tokenCommand, noTokenMessage)
-    secret_names = get_mandatory_value_from_input(args, namesCommand, noNamesMessage).split(',')
-    secret_values = get_optional_value_from_input(args, valuesCommand).split(',')
+    secret_names = get_mandatory_value_from_input(args, namesCommand, noNamesMessage).split('[|]')
+    secret_values = get_optional_value_from_input(args, valuesCommand).split('[|]')
     target_team_name = get_optional_value_from_input(args, teamCommand)
     target_repo_name = get_optional_value_from_input(args, repoCommand)
     interactive = interactiveCommand in args
