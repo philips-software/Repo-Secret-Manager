@@ -176,8 +176,7 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
         url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/actions/secrets/{secret_name}"
 
         data = {
-            "encrypted_value": secret_value,
-            "key_id": key_id
+            "encrypted_value": secret_value
         }
         response = requests.put(url, headers=headers, data=json.dumps(data))
         print(f"Response Code: {response.status_code}")
