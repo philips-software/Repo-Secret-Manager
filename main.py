@@ -154,7 +154,7 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
     repo_full_name = target_repository.full_name
     repo_name = target_repository.name
     repo_owner = "philips-internal"
-    query_url = f"https://api.github.com/repos/{repo_full_name}/actions/secrets"
+    query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets"
     headers = {'Authorization': f'token {token}'}
     r = requests.get(query_url, headers=headers)
     response = r.json()
