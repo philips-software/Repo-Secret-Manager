@@ -213,7 +213,7 @@ if __name__ == "__main__":
             if not inp.interactive or apply_action(repo.name):
                 try:
                     if inp.action == createCommand:
-                        add_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
+                        # add_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
                         add_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
                     if inp.action == updateCommand:
                         c = repo.get_contributors()
