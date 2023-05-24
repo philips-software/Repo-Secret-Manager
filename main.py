@@ -1,5 +1,5 @@
 import sys
-
+import json
 import requests
 from github import Github, BadCredentialsException
 from github.GithubException import UnknownObjectException
@@ -150,6 +150,29 @@ def add_secret(token, target_repository, secret_name, secret_value):
     else:
         print(f"Secret \"{secret_name}\" already exists in {repo_name}")
 
+def add_dependabot_secret(token, target_repository, secret_name, secret_value):
+    repo_full_name = target_repository.full_name
+    repo_name = target_repository.name
+    repo_owner = "philips-internal"
+    query_url = f"https://api.github.com/repos/{repo_full_name}/actions/secrets"
+    headers = {'Authorization': f'token {token}'}
+    r = requests.get(query_url, headers=headers)
+    response = r.json()
+    try:
+      secret_names = flatten_secrets_dict(response["secrets"])
+    except: 
+      secret_names = []
+    if secret_name not in secret_names:
+        # put call add repo secrets to dependabot secrets
+        url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets/{secret_name}"
+
+        data = {
+            "value": secret_value
+        }
+        response = requests.put(url, headers=headers, data=json.dumps(data))
+        print(f"Dependabot Secret \"{secret_name}\" added to {repo_name}")
+    else:
+        print(f"Dependabot Secret \"{secret_name}\" already exists in {repo_name}")
 
 if __name__ == "__main__":
     if len(args) == 0:
@@ -177,6 +200,7 @@ if __name__ == "__main__":
                 try:
                     if inp.action == createCommand:
                         add_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
+                        add_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
                     if inp.action == updateCommand:
                         c = repo.get_contributors()
                         repo.create_secret(inp.secret_names[i], inp.secret_values[i])
