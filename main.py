@@ -132,6 +132,14 @@ def flatten_secrets_dict(dict_of_secrets):
         list_of_secrets.append(secret["name"])
     return list_of_secrets
 
+def get_repo_public_key(token, repo_owner, repo_name):
+   
+   query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets/public-key"
+   headers = {'Authorization': f'token {token}'}
+   r = requests.get(query_url, headers=headers)
+   response = r.json()
+   return response["key_id"], response["key"]
+
 
 def add_secret(token, target_repository, secret_name, secret_value):
     repo_full_name = target_repository.full_name
@@ -154,6 +162,7 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
     repo_full_name = target_repository.full_name
     repo_name = target_repository.name
     repo_owner = "philips-internal"
+    key_id, key = get_repo_public_key(token, repo_owner, repo_name)
     query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets"
     headers = {'Authorization': f'token {token}'}
     r = requests.get(query_url, headers=headers)
@@ -167,7 +176,8 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
         url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets/{secret_name}"
 
         data = {
-            "value": secret_value
+            "encrypted_value": secret_value,
+            "key_id": key_id
         }
         response = requests.put(url, headers=headers, data=json.dumps(data))
         print(f"Response Code: {response.status_code}")
