@@ -163,7 +163,7 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
     repo_name = target_repository.name
     repo_owner = "philips-internal"
     key_id, key = get_repo_public_key(token, repo_owner, repo_name)
-    query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets"
+    query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/actions/secrets"
     headers = {'Authorization': f'token {token}'}
     r = requests.get(query_url, headers=headers)
     response = r.json()
@@ -173,7 +173,7 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
       secret_names = []
     if secret_name not in secret_names:
         # put call add repo secrets to dependabot secrets
-        url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets/{secret_name}"
+        url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/actions/secrets/{secret_name}"
 
         data = {
             "encrypted_value": secret_value,
@@ -182,11 +182,11 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
         response = requests.put(url, headers=headers, data=json.dumps(data))
         print(f"Response Code: {response.status_code}")
         if response.status_code == 201:
-            print(f"Dependabot Secret \"{secret_name}\" added to {repo_name}")
+            print(f"actions Secret \"{secret_name}\" added to {repo_name}")
         else:
-            print(f"Dependabot Secret \"{secret_name}\" could NOT be added to {repo_name}")
+            print(f"actions Secret \"{secret_name}\" could NOT be added to {repo_name}")
     else:
-        print(f"Dependabot Secret \"{secret_name}\" already exists in {repo_name}")
+        print(f"actions Secret \"{secret_name}\" already exists in {repo_name}")
 
 if __name__ == "__main__":
     if len(args) == 0:
