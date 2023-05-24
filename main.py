@@ -4,6 +4,9 @@ import requests
 from github import Github, BadCredentialsException
 from github.GithubException import UnknownObjectException
 
+from base64 import b64encode
+from nacl import encoding, public
+
 args = sys.argv[1:]
 source = None
 
@@ -140,6 +143,13 @@ def get_repo_public_key(token, repo_owner, repo_name):
    response = r.json()
    return response["key_id"], response["key"]
 
+def encrypt(public_key: str, secret_value: str) -> str:
+  """Encrypt a Unicode string using the public key."""
+  public_key = public.PublicKey(public_key.encode("utf-8"), encoding.Base64Encoder())
+  sealed_box = public.SealedBox(public_key)
+  encrypted = sealed_box.encrypt(secret_value.encode("utf-8"))
+  return b64encode(encrypted).decode("utf-8")
+
 
 def add_secret(token, target_repository, secret_name, secret_value):
     repo_full_name = target_repository.full_name
@@ -163,7 +173,7 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
     repo_name = target_repository.name
     repo_owner = "philips-internal"
     key_id, key = get_repo_public_key(token, repo_owner, repo_name)
-    query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/actions/secrets"
+    query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets"
     headers = {'Authorization': f'token {token}'}
     r = requests.get(query_url, headers=headers)
     response = r.json()
@@ -173,19 +183,20 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
       secret_names = []
     if secret_name not in secret_names:
         # put call add repo secrets to dependabot secrets
-        url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/actions/secrets/{secret_name}"
+        url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets/{secret_name}"
 
         data = {
-            "encrypted_value": secret_value
+            "encrypted_value": encrypt(key, secret_value),
+            "key_id": key_id
         }
         response = requests.put(url, headers=headers, data=json.dumps(data))
         print(f"Response Code: {response.status_code}")
         if response.status_code == 201:
-            print(f"actions Secret \"{secret_name}\" added to {repo_name}")
+            print(f"dependabot Secret \"{secret_name}\" added to {repo_name}")
         else:
-            print(f"actions Secret \"{secret_name}\" could NOT be added to {repo_name}")
+            print(f"dependabot Secret \"{secret_name}\" could NOT be added to {repo_name}")
     else:
-        print(f"actions Secret \"{secret_name}\" already exists in {repo_name}")
+        print(f"dependabot Secret \"{secret_name}\" already exists in {repo_name}")
 
 if __name__ == "__main__":
     if len(args) == 0:
