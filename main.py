@@ -121,7 +121,6 @@ def get_input_from_user():
 
 
 def get_input_from_cli():
-    print(f"args are {args[0]}, {args[1]}, {args[2]}, {args[3]}, {args[4]}, {args[5]}, {args[6]}, {args[7]}, {args[8]}")
     token = get_mandatory_value_from_input(args, tokenCommand, noTokenMessage)
     secret_names = get_mandatory_value_from_input(args, namesCommand, noNamesMessage).split(',')
     secret_values = get_optional_value_from_input(args, valuesCommand).split(',')
