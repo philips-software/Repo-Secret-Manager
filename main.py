@@ -172,7 +172,6 @@ def add_secret(token, target_repository, secret_name, secret_value):
         print(f"Secret \"{secret_name}\" already exists in {repo_name}")
 
 def add_dependabot_secret(token, target_repository, secret_name, secret_value):
-    # repo_full_name = target_repository.full_name
     repo_name = target_repository.name
     repo_owner = "philips-internal"
     key_id, key = get_repo_public_key(token, repo_owner, repo_name)
@@ -202,7 +201,6 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
         print(f"dependabot Secret \"{secret_name}\" already exists in {repo_name}")
 
 def update_dependabot_secret(token, target_repository, secret_name, secret_value):
-    # repo_full_name = target_repository.full_name
     repo_name = target_repository.name
     repo_owner = "philips-internal"
     key_id, key = get_repo_public_key(token, repo_owner, repo_name)
@@ -230,7 +228,6 @@ def update_dependabot_secret(token, target_repository, secret_name, secret_value
             print(f"dependabot Secret \"{secret_name}\" could NOT be updated in {repo_name}")
 
 def delete_dependabot_secret(token, target_repository, secret_name):
-    # repo_full_name = target_repository.full_name
     repo_name = target_repository.name
     repo_owner = "philips-internal"
     headers = {'Authorization': f'token {token}'}
