@@ -249,6 +249,9 @@ if __name__ == "__main__":
     else:
         inp = get_input_from_cli()
 
+    print(f"Len of dependabot is {len(inp.dependabotSecretsSync)}")
+    print(f"value of dependabot is {inp.dependabotSecretsSync.lower()}")
+
     g = get_github_user(inp.token, invalidTokenMessage)
 
     if inp.target_team_name != "":
@@ -282,7 +285,7 @@ if __name__ == "__main__":
                             delete_dependabot_secret(inp.token, repo, inp.secret_names[i])
                     except UnknownObjectException:
                         print(f"The provided token does not have permission to manage {repo.name}, it is being skipped")
-            elif inp.dependabotSecretsSync.lower() == "no":
+            else:
                 if not inp.interactive or apply_action(repo.name):
                     try:
                         if inp.action == createCommand:
