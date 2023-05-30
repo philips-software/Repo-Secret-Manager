@@ -249,9 +249,6 @@ if __name__ == "__main__":
     else:
         inp = get_input_from_cli()
 
-    print(f"Len of dependabot is {len(inp.dependabotSecretsSync)}")
-    print(f"value of dependabot is {inp.dependabotSecretsSync.lower()}")
-
     g = get_github_user(inp.token, invalidTokenMessage)
 
     if inp.target_team_name != "":
@@ -268,7 +265,7 @@ if __name__ == "__main__":
             continue
 
         for i in range(len(inp.secret_names)):
-            if len(inp.dependabotSecretsSync) == 0 or inp.dependabotSecretsSync.lower() == "yes":
+            if len(inp.dependabotSecretsSync) == 0 or inp.dependabotSecretsSync.lower() == "yes" or inp.dependabotSecretsSync.lower() == '':
                 if not inp.interactive or apply_action(repo.name):
                     try:
                         if inp.action == createCommand:
