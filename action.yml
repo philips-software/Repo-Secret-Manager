@@ -26,7 +26,7 @@ inputs:
   dependabotSecretsSync:
     description: 'Sync secrets to dependabot (yes/no), default yes'
     mandatory: False
-    default: 'yes'
+    default: 'no'
 runs:
   using: 'docker'
   image: 'Dockerfile'
