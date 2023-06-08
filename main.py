@@ -19,7 +19,7 @@ valuesCommand = "--values"
 teamCommand = "--team"
 repoCommand = "--repo"
 dependabotSecretsSyncOption = "--dependabotsecretssync"
-repoOwner = "--repoowner"
+repositoryOwner = "--repoowner"
 interactiveCommand = "--interactive"
 
 noTokenMessage = "Please provide a valid GitHub PAT using --token <PAT>."
@@ -129,7 +129,7 @@ def get_input_from_cli():
     target_team_name = get_optional_value_from_input(args, teamCommand)
     target_repo_name = get_optional_value_from_input(args, repoCommand)
     dependabotSecretsSync = get_optional_value_from_input(args, dependabotSecretsSyncOption)
-    repoOwner = get_optional_value_from_input(args, repoOwner)
+    repoOwner = get_optional_value_from_input(args, repositoryOwner)
     interactive = interactiveCommand in args
     action = validate_action(args[0], createCommand, updateCommand, deleteCommand, secret_names, secret_values)
     return UserInput(token, action, secret_names, secret_values, target_team_name, target_repo_name, dependabotSecretsSync, repoOwner, interactive)
