@@ -33,7 +33,7 @@ invalidNamesAndSecretsMessage = "Secret names and secret values lists are not th
 
 
 class UserInput:
-    def __init__(self, token, action, secret_names, secret_values, target_team_name, target_repo_name, dependabotSecretsSync, interactive):
+    def __init__(self, token, action, secret_names, secret_values, target_team_name, target_repo_name, dependabotSecretsSync, repoOwner,  interactive):
         self.token = token
         self.action = action
         self.secret_names = secret_names
@@ -41,6 +41,7 @@ class UserInput:
         self.target_team_name = target_team_name
         self.target_repo_name = target_repo_name
         self.dependabotSecretsSync = dependabotSecretsSync
+        self.repoOwner = repoOwner
         self.interactive = interactive
 
 
