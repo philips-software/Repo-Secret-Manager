@@ -42,7 +42,7 @@ runs:
     VALUES: ${{ inputs.secret-values }}
     REPO: ${{ inputs.repo }}
     DEPENDABOTSECRETSYNC: ${{ inputs.dependabotSecretsSync}}
-    REPOSITORYOWNER: ${{ github.repository_owner }}
+    REPOSITORYOWNER: ${{ inputs.repo_owner }}
 branding:
   icon: 'lock'  
   color: 'blue'
