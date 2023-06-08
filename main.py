@@ -248,6 +248,7 @@ if __name__ == "__main__":
         inp = get_input_from_user()
     else:
         inp = get_input_from_cli()
+        print(inp.repoOwner)
 
     g = get_github_user(inp.token, invalidTokenMessage)
 
