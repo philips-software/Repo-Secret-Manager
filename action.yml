@@ -27,6 +27,10 @@ inputs:
     description: 'Sync secrets to dependabot (yes/no), default yes'
     mandatory: False
     default: 'no'
+  repo_owner:
+    description: 'Repository Owner Name'
+    mandatory: False
+    default: 'philips-internal'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -38,6 +42,7 @@ runs:
     VALUES: ${{ inputs.secret-values }}
     REPO: ${{ inputs.repo }}
     DEPENDABOTSECRETSYNC: ${{ inputs.dependabotSecretsSync}}
+    REPOSITORYOWNER: ${{ github.repository_owner }}
 branding:
   icon: 'lock'  
   color: 'blue'

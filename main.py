@@ -19,6 +19,7 @@ valuesCommand = "--values"
 teamCommand = "--team"
 repoCommand = "--repo"
 dependabotSecretsSyncOption = "--dependabotsecretssync"
+repoOwner = "--repoowner"
 interactiveCommand = "--interactive"
 
 noTokenMessage = "Please provide a valid GitHub PAT using --token <PAT>."
@@ -127,9 +128,10 @@ def get_input_from_cli():
     target_team_name = get_optional_value_from_input(args, teamCommand)
     target_repo_name = get_optional_value_from_input(args, repoCommand)
     dependabotSecretsSync = get_optional_value_from_input(args, dependabotSecretsSyncOption)
+    repoOwner = get_optional_value_from_input(args, repoOwner)
     interactive = interactiveCommand in args
     action = validate_action(args[0], createCommand, updateCommand, deleteCommand, secret_names, secret_values)
-    return UserInput(token, action, secret_names, secret_values, target_team_name, target_repo_name, dependabotSecretsSync, interactive)
+    return UserInput(token, action, secret_names, secret_values, target_team_name, target_repo_name, dependabotSecretsSync, repoOwner, interactive)
 
 
 def flatten_secrets_dict(dict_of_secrets):
@@ -171,9 +173,9 @@ def add_secret(token, target_repository, secret_name, secret_value):
     else:
         print(f"Secret \"{secret_name}\" already exists in {repo_name}")
 
-def add_dependabot_secret(token, target_repository, secret_name, secret_value):
+def add_dependabot_secret(token, target_repository, secret_name, secret_value, repoOwner):
     repo_name = target_repository.name
-    repo_owner = "philips-internal"
+    repo_owner = repoOwner
     key_id, key = get_repo_public_key(token, repo_owner, repo_name)
     query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets"
     headers = {'Authorization': f'token {token}'}
@@ -200,9 +202,9 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value):
     else:
         print(f"dependabot Secret \"{secret_name}\" already exists in {repo_name}")
 
-def update_dependabot_secret(token, target_repository, secret_name, secret_value):
+def update_dependabot_secret(token, target_repository, secret_name, secret_value, repoOwner):
     repo_name = target_repository.name
-    repo_owner = "philips-internal"
+    repo_owner = repoOwner
     key_id, key = get_repo_public_key(token, repo_owner, repo_name)
     query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets"
     headers = {'Authorization': f'token {token}'}
@@ -227,9 +229,9 @@ def update_dependabot_secret(token, target_repository, secret_name, secret_value
         else:
             print(f"dependabot Secret \"{secret_name}\" could NOT be updated in {repo_name}")
 
-def delete_dependabot_secret(token, target_repository, secret_name):
+def delete_dependabot_secret(token, target_repository, secret_name, repoOwner):
     repo_name = target_repository.name
-    repo_owner = "philips-internal"
+    repo_owner = repoOwner
     headers = {'Authorization': f'token {token}'}
     # put call add repo secrets to dependabot secrets
     url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets/{secret_name}"
@@ -267,16 +269,16 @@ if __name__ == "__main__":
                     try:
                         if inp.action == createCommand:
                             add_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
-                            add_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
+                            add_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
                         if inp.action == updateCommand:
                             c = repo.get_contributors()
                             repo.create_secret(inp.secret_names[i], inp.secret_values[i])
                             print(f"Secret \"{inp.secret_names[i]}\" updated for {repo.name}")
-                            update_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
+                            update_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
                         if inp.action == deleteCommand:
                             repo.delete_secret(inp.secret_names[i])
                             print(f"Secret \"{inp.secret_names[i]}\" removed from {repo.name}")
-                            delete_dependabot_secret(inp.token, repo, inp.secret_names[i])
+                            delete_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.repoOwner)
                     except UnknownObjectException:
                         print(f"The provided token does not have permission to manage {repo.name}, it is being skipped")
             else:
