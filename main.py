@@ -21,6 +21,7 @@ repoCommand = "--repo"
 dependabotSecretsSyncOption = "--dependabotsecretssync"
 repositoryOwner = "--repoowner"
 interactiveCommand = "--interactive"
+defaultRepoOwnerName = "org-name"
 
 noTokenMessage = "Please provide a valid GitHub PAT using --token <PAT>."
 invalidTokenMessage = "The token you provided is invalid."
@@ -272,7 +273,7 @@ if __name__ == "__main__":
                     try:
                         if inp.action == createCommand:
                             add_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
-                            if not inp.repoOwner == "org-name":
+                            if not inp.repoOwner == defaultRepoOwnerName:
                                 add_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
                             else:
                                 raise ValueError(invalidRepoOwnerMessage)
@@ -280,14 +281,14 @@ if __name__ == "__main__":
                             c = repo.get_contributors()
                             repo.create_secret(inp.secret_names[i], inp.secret_values[i])
                             print(f"Secret \"{inp.secret_names[i]}\" updated for {repo.name}")
-                            if not inp.repoOwner == "org-name":
+                            if not inp.repoOwner == defaultRepoOwnerName:
                                 update_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
                             else:
                                 raise ValueError(invalidRepoOwnerMessage)
                         if inp.action == deleteCommand:
                             repo.delete_secret(inp.secret_names[i])
                             print(f"Secret \"{inp.secret_names[i]}\" removed from {repo.name}")
-                            if not inp.repoOwner == "org-name":
+                            if not inp.repoOwner == defaultRepoOwnerName:
                                 delete_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.repoOwner)
                             else:
                                 raise ValueError(invalidRepoOwnerMessage)
