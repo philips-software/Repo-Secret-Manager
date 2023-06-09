@@ -13,18 +13,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Cache Python packages
-      id: cache
+    - name: Cache Python dependencies
       uses: actions/cache@v2
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-${{ matrix.python-version }}-
-          ${{ runner.os }}-pip-
-    
+      
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
         
@@ -39,4 +35,3 @@ jobs:
         
     - name: Test with pytest
       run: pytest
-
