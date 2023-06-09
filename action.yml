@@ -24,13 +24,12 @@ inputs:
     mandatory: False
     default: ''
   dependabotSecretsSync:
-    description: 'Sync secrets to dependabot (yes/no), default yes'
+    description: 'Sync secrets to dependabot (yes/no), default no'
     mandatory: False
     default: 'no'
   repo_owner:
     description: 'Repository Owner Name'
-    mandatory: False
-    default: 'philips-internal'
+    mandatory: True
 runs:
   using: 'docker'
   image: 'Dockerfile'
