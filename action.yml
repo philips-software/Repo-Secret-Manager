@@ -29,7 +29,8 @@ inputs:
     default: 'no'
   repo_owner:
     description: 'Repository Owner Name'
-    mandatory: True
+    mandatory: False
+    default: 'org-name'
 runs:
   using: 'docker'
   image: 'Dockerfile'
