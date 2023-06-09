@@ -23,6 +23,14 @@ inputs:
     description: 'A specific repo to sync the secrets to'
     mandatory: False
     default: ''
+  dependabotSecretsSync:
+    description: 'Sync secrets to dependabot (yes/no), default no'
+    mandatory: False
+    default: 'no'
+  repo_owner:
+    description: 'Repository Owner Name'
+    mandatory: False
+    default: 'org-name'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -33,6 +41,8 @@ runs:
     NAMES: ${{ inputs.secret-names }}
     VALUES: ${{ inputs.secret-values }}
     REPO: ${{ inputs.repo }}
+    DEPENDABOTSECRETSYNC: ${{ inputs.dependabotSecretsSync}}
+    REPOSITORYOWNER: ${{ inputs.repo_owner }}
 branding:
   icon: 'lock'  
   color: 'blue'
