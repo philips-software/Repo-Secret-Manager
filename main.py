@@ -30,6 +30,7 @@ noTeamMessage = "Invalid team name provided."
 invalidNamesAndSecretsMessage = "Secret names and secret values lists are not the same length. This may be due to an " \
                                 "invalid input or a secret that contains a comma. Secrets with comma(s) are currently" \
                                 " not supported."
+invalidRepoOwnerMessage = "Invalid Repository Owner name, please pass the value to sync dependabot secrets!"
 
 
 class UserInput:
@@ -274,7 +275,7 @@ if __name__ == "__main__":
                             if not inp.repoOwner == "org-name":
                                 add_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
                             else:
-                                raise ValueError("Invalid Repository Owner name, please pass the value to sync dependabot secrets!")
+                                raise ValueError(invalidRepoOwnerMessage)
                         if inp.action == updateCommand:
                             c = repo.get_contributors()
                             repo.create_secret(inp.secret_names[i], inp.secret_values[i])
@@ -282,14 +283,14 @@ if __name__ == "__main__":
                             if not inp.repoOwner == "org-name":
                                 update_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
                             else:
-                                raise ValueError("Invalid Repository Owner name, please pass the value to sync dependabot secrets!")
+                                raise ValueError(invalidRepoOwnerMessage)
                         if inp.action == deleteCommand:
                             repo.delete_secret(inp.secret_names[i])
                             print(f"Secret \"{inp.secret_names[i]}\" removed from {repo.name}")
                             if not inp.repoOwner == "org-name":
                                 delete_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.repoOwner)
                             else:
-                                raise ValueError("Invalid Repository Owner name, please pass the value to sync dependabot secrets!")
+                                raise ValueError(invalidRepoOwnerMessage)
                     except UnknownObjectException:
                         print(f"The provided token does not have permission to manage {repo.name}, it is being skipped")
             else:
