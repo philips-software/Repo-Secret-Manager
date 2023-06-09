@@ -271,16 +271,25 @@ if __name__ == "__main__":
                     try:
                         if inp.action == createCommand:
                             add_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i])
-                            add_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
+                            if not inp.repoOwner == "org-name":
+                                add_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
+                            else:
+                                raise ValueError("Invalid Repository Owner name, dependabot secrets will not sync.")
                         if inp.action == updateCommand:
                             c = repo.get_contributors()
                             repo.create_secret(inp.secret_names[i], inp.secret_values[i])
                             print(f"Secret \"{inp.secret_names[i]}\" updated for {repo.name}")
-                            update_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
+                            if not inp.repoOwner == "org-name":
+                                update_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.secret_values[i], inp.repoOwner)
+                            else:
+                                raise ValueError("Invalid Repository Owner name, dependabot secrets will not sync.")
                         if inp.action == deleteCommand:
                             repo.delete_secret(inp.secret_names[i])
                             print(f"Secret \"{inp.secret_names[i]}\" removed from {repo.name}")
-                            delete_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.repoOwner)
+                            if not inp.repoOwner == "org-name":
+                                delete_dependabot_secret(inp.token, repo, inp.secret_names[i], inp.repoOwner)
+                            else:
+                                raise ValueError("Invalid Repository Owner name, dependabot secrets will not sync.")
                     except UnknownObjectException:
                         print(f"The provided token does not have permission to manage {repo.name}, it is being skipped")
             else:
