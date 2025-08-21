@@ -17,7 +17,7 @@ Currently, GitHub does not support storing secrets at the team level, only at th
 
 ## Usage
 ### Add Secret(s)
-```yaml
+```yml
 - name: Add Secret
   uses: philips-software/Repo-Secret-Manager@main
   with:
