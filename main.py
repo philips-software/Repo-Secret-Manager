@@ -208,29 +208,21 @@ def add_dependabot_secret(token, target_repository, secret_name, secret_value, r
 def update_dependabot_secret(token, target_repository, secret_name, secret_value, repoOwner):
     repo_name = target_repository.name
     repo_owner = repoOwner
-    key_id, key = get_repo_public_key(token, repo_owner, repo_name)
-    query_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets"
-    headers = {'Authorization': f'token {token}'}
-    r = requests.get(query_url, headers=headers)
-    response = r.json()
-    try:
-      secret_names = flatten_secrets_dict(response["secrets"])
-    except: 
-      secret_names = []
-    if secret_name not in secret_names:
-        # patch call update repo secrets to dependabot secrets
-        url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets/{secret_name}"
+    headers = {
+        'Authorization': f'token {token}',
+        'Accept': 'application/vnd.github+json'
+    }
 
-        data = {
-            "encrypted_value": encrypt(key, secret_value),
-            "key_id": key_id
-        }
-        response = requests.patch(url, headers=headers, data=json.dumps(data))
-        print(f"Response Code: {response.status_code}")
-        if response.status_code == 204:
-            print(f"dependabot Secret \"{secret_name}\" updated in {repo_name}")
-        else:
-            print(f"dependabot Secret \"{secret_name}\" could NOT be updated in {repo_name}")
+    key_id, key = get_repo_public_key(token, repo_owner, repo_name)
+    put_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dependabot/secrets/{secret_name}"
+    encrypted_value = encrypt(key, secret_value)
+    body = {"encrypted_value": encrypted_value, "key_id": key_id}
+    put_resp = requests.put(put_url, headers=headers, json=body)
+    print(f"Create (update) Response Code: {put_resp.status_code}")
+    if put_resp.status_code in (201, 204):
+        print(f"dependabot Secret \"{secret_name}\" updated in {repo_name}")
+    else:
+        print(f"dependabot Secret \"{secret_name}\" could NOT be updated in {repo_name}. Response: {put_resp.text}")
 
 def delete_dependabot_secret(token, target_repository, secret_name, repoOwner):
     repo_name = target_repository.name
